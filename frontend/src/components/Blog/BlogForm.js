@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getStoredToken, clearTokens, isTokenExpired } from '../../utils/tokenUtils';
 
 export default function BlogForm({ blog, onSave, onCancel }) {
   const [title, setTitle] = useState(blog ? blog.title : '');
@@ -18,16 +19,26 @@ export default function BlogForm({ blog, onSave, onCancel }) {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const token = localStorage.getItem('token');
+    
+    const token = getStoredToken();
+    if (!token || isTokenExpired(token)) {
+      setError('Token expired. Please log in again.');
+      clearTokens();
+      window.location.reload();
+      return;
+    }
+    
     if (!title || !description) {
       setError('Title and description are required.');
       setLoading(false);
       return;
     }
+    
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     if (image) formData.append('image', image);
+    
     try {
       let res, data;
       if (blog && blog._id) {
@@ -43,6 +54,14 @@ export default function BlogForm({ blog, onSave, onCancel }) {
           body: formData
         });
       }
+      
+      if (res.status === 401) {
+        setError('Token expired. Please log in again.');
+        clearTokens();
+        window.location.reload();
+        return;
+      }
+      
       data = await res.json();
       if (!res.ok) {
         setError(data.message || 'Failed to save blog.');

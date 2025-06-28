@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BlogForm from '../Blog/BlogForm';
 import BlogView from '../Blog/BlogView';
+import { getStoredToken, getStoredUser, clearTokens, isTokenExpired } from '../../utils/tokenUtils';
 
 export default function Dashboard() {
   const [blogs, setBlogs] = useState([]);
@@ -8,18 +9,36 @@ export default function Dashboard() {
   const [showForm, setShowForm] = useState(false);
   const [editingBlog, setEditingBlog] = useState(null);
   const [viewingBlog, setViewingBlog] = useState(null);
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = localStorage.getItem('token');
+  const user = getStoredUser();
+  const token = getStoredToken();
 
   const fetchBlogs = () => {
-    if (!token) return;
+    if (!token || isTokenExpired(token)) {
+      setError('Token expired. Please log in again.');
+      clearTokens();
+      window.location.reload();
+      return;
+    }
+    
     fetch('/api/blogs', {
       headers: { 'Authorization': 'Bearer ' + token }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 401) {
+          // Token is invalid or expired
+          clearTokens();
+          window.location.reload();
+          return;
+        }
+        return res.json();
+      })
       .then(data => {
-        if (Array.isArray(data)) setBlogs(data);
-        else setError(data.message || 'Failed to load blogs');
+        if (data && Array.isArray(data)) {
+          setBlogs(data);
+          setError('');
+        } else if (data) {
+          setError(data.message || 'Failed to load blogs');
+        }
       })
       .catch(() => setError('Network error'));
   };
@@ -30,18 +49,33 @@ export default function Dashboard() {
   }, [token]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    clearTokens();
     window.location.reload();
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
+    
+    if (!token || isTokenExpired(token)) {
+      alert('Token expired. Please log in again.');
+      clearTokens();
+      window.location.reload();
+      return;
+    }
+    
     try {
       const res = await fetch(`/api/blogs/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': 'Bearer ' + token }
       });
+      
+      if (res.status === 401) {
+        alert('Token expired. Please log in again.');
+        clearTokens();
+        window.location.reload();
+        return;
+      }
+      
       const data = await res.json();
       if (!res.ok) {
         alert(data.message || 'Delete failed.');

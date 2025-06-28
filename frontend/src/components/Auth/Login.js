@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../../api/api';
+import { storeTokens } from '../../utils/tokenUtils';
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -11,8 +12,7 @@ export default function Login({ onLogin }) {
     setError('');
     const data = await login(email, password);
     if (data.token) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      storeTokens(data.token, data.user);
       if (onLogin) onLogin();
     } else {
       setError(data.message || 'Login failed');

@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
+import { isAuthenticated } from './utils/tokenUtils';
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
-  const isLoggedIn = !!localStorage.getItem('token');
 
-  if (isLoggedIn) {
+  // Check if user is properly authenticated (token exists AND is not expired)
+  if (isAuthenticated()) {
     return <Dashboard />;
   }
 

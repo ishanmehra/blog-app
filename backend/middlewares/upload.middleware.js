@@ -31,8 +31,18 @@ const blogStorage = multer.diskStorage({
   }
 });
 
-const uploadProfile = multer({ storage: profileStorage, fileFilter: imageFilter });
-const uploadBlog = multer({ storage: blogStorage, fileFilter: imageFilter });
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const uploadProfile = multer({ 
+  storage: profileStorage, 
+  fileFilter: imageFilter,
+  limits: { fileSize: MAX_FILE_SIZE }
+});
+const uploadBlog = multer({ 
+  storage: blogStorage, 
+  fileFilter: imageFilter,
+  limits: { fileSize: MAX_FILE_SIZE }
+});
 
 module.exports = {
   uploadProfile,

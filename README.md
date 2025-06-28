@@ -154,14 +154,88 @@ npm start
 
 ### Authentication
 - `POST /api/auth/signup` - User registration
+  - **Request (multipart/form-data):**
+    - `email`: string
+    - `password`: string
+    - `profileImage`: file (JPG/PNG, max 5MB)
+  - **Success Response:**
+    - `201 Created`
+    - `{ message: 'User registered successfully.' }`
+  - **Error Responses:**
+    - `400`: Missing fields, invalid password, or invalid image type/size
+    - `409`: Email already registered
+
 - `POST /api/auth/login` - User login
+  - **Request (JSON):**
+    - `email`: string
+    - `password`: string
+  - **Success Response:**
+    - `200 OK`
+    - `{ token, user: { email, profileImage } }`
+  - **Error Responses:**
+    - `400`: Missing fields
+    - `401`: Invalid credentials
 
 ### Blogs
 - `GET /api/blogs` - Get all blogs
+  - **Headers:**
+    - `Authorization: Bearer <token>`
+  - **Success Response:**
+    - `200 OK`
+    - `[{ _id, title, description, image, user: { email, profileImage }, createdAt, ... }]`
+  - **Error Responses:**
+    - `401`: Unauthorized (missing/invalid token)
+
 - `POST /api/blogs` - Create new blog
+  - **Headers:**
+    - `Authorization: Bearer <token>`
+  - **Request (multipart/form-data):**
+    - `title`: string
+    - `description`: string
+    - `image`: file (JPG/PNG, max 5MB)
+  - **Success Response:**
+    - `201 Created`
+    - `{ message: 'Blog created successfully.', blog }`
+  - **Error Responses:**
+    - `400`: Missing fields, invalid image type/size
+    - `401`: Unauthorized
+
 - `GET /api/blogs/:id` - Get blog by ID
+  - **Headers:**
+    - `Authorization: Bearer <token>`
+  - **Success Response:**
+    - `200 OK`
+    - `{ _id, title, description, image, user: { email, profileImage }, createdAt, ... }`
+  - **Error Responses:**
+    - `404`: Blog not found
+    - `401`: Unauthorized
+
 - `PUT /api/blogs/:id` - Update blog
+  - **Headers:**
+    - `Authorization: Bearer <token>`
+  - **Request (multipart/form-data):**
+    - `title`: string (optional)
+    - `description`: string (optional)
+    - `image`: file (JPG/PNG, max 5MB, optional)
+  - **Success Response:**
+    - `200 OK`
+    - `{ message: 'Blog updated successfully.', blog }`
+  - **Error Responses:**
+    - `400`: Invalid image type/size
+    - `401`: Unauthorized
+    - `403`: Not the blog owner
+    - `404`: Blog not found
+
 - `DELETE /api/blogs/:id` - Delete blog
+  - **Headers:**
+    - `Authorization: Bearer <token>`
+  - **Success Response:**
+    - `200 OK`
+    - `{ message: 'Blog deleted successfully.' }`
+  - **Error Responses:**
+    - `401`: Unauthorized
+    - `403`: Not the blog owner
+    - `404`: Blog not found
 
 ## Usage
 
@@ -177,17 +251,20 @@ npm start
 - Password hashing with bcrypt
 - JWT token authentication
 - Input validation and sanitization
-- File type validation for uploads
+- File type validation for uploads (JPG/PNG only)
+- **File size validation for uploads (max 5MB)**
 - CORS configuration
 - Protected routes
 
 ## File Upload
 
 The application supports image uploads for:
-- **Profile Images**: JPG/PNG format
-- **Blog Images**: JPG/PNG format
+- **Profile Images**: JPG/PNG format, max 5MB
+- **Blog Images**: JPG/PNG format, max 5MB
 
 Files are stored in the `uploads/` directory with unique filenames.
+
+**Note:** If the file type is not JPG/PNG or the file size exceeds 5MB, the server will return a 400 error with a relevant message.
 
 ## Contributing
 

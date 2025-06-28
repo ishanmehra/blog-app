@@ -1,0 +1,10 @@
+{
+  "name": "blog-app-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+} 

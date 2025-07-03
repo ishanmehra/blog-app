@@ -55,6 +55,8 @@ blog-app/
 │   ├── server.js
 │   └── package.json
 ├── frontend/
+│   ├── public/
+│   │   └── index.html   <--- REQUIRED for build (see below)
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Auth/
@@ -88,7 +90,7 @@ cd blog-app
 
 ### 2. Install Dependencies
 ```bash
-# Install root dependencies (for concurrently)
+# In the root directory
 npm install
 
 # Install backend dependencies
@@ -100,62 +102,70 @@ cd ../frontend
 npm install
 ```
 
-### 3. Environment Setup
-Create a `.env` file in the `backend` directory:
-```env
-MONGO_URI=mongodb://localhost:27017/blog-app
-JWT_SECRET=your_jwt_secret_key_here
-PORT=5000
-```
-- Replace `your_jwt_secret_key_here` with a secure random string (see below).
+### 3. Ensure Required Files Exist
+- Make sure `frontend/public/index.html` exists. This file is required for building the frontend.
+- If it does not exist, create it with the following content:
 
-### 4. Database Setup
-Make sure MongoDB is running. If using a local instance:
-```bash
-mongod
+```html
+<!-- frontend/public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
 ```
 
-### 5. Build Frontend (for production)
-```bash
-cd frontend
-npm run build
-```
+### 4. Environment Setup
+- In the `backend` directory, create a `.env` file:
+  ```env
+  MONGO_URI=mongodb://localhost:27017/blog-app
+  JWT_SECRET=your_jwt_secret_key_here
+  PORT=5000
+  ```
+- Generate a secure JWT secret key:
+  ```bash
+  node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+  ```
+  Use the output as your `JWT_SECRET`.
+
+### 5. Start MongoDB
+- Make sure MongoDB is running locally:
+  ```bash
+  mongod
+  ```
+- (Optional) Use MongoDB Compass to visually inspect your database:  
+  Download from https://www.mongodb.com/try/download/compass and connect to `mongodb://localhost:27017`.
 
 ## Running the Application
 
-### Development Mode
-Run both backend and frontend concurrently from the root directory:
+### Development Mode (Recommended for first-time users)
 ```bash
+# From the root directory
 npm run dev
 ```
-- Or run separately:
-  - **Backend** (from `backend` directory):
-    ```bash
-    npm run dev
-    ```
-  - **Frontend** (from `frontend` directory):
-    ```bash
-    npm start
-    ```
+- This will start both the backend (on port 5000) and frontend (on port 3000).
+- Open [http://localhost:3000](http://localhost:3000) in your browser to use the app.
 
 ### Production Mode
-1. Build the frontend:
-   ```bash
-   cd frontend
-   npm run build
-   ```
-2. Start the backend (serves both API and React build):
-   ```bash
-   cd ../backend
-   npm start
-   ```
-
-## JWT Secret Key Generation
-Generate a secure JWT secret key using Node.js:
 ```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+# Build the frontend
+cd frontend
+npm run build
+
+# Start the backend (serves API and React build)
+cd ../backend
+npm start
 ```
-Copy the output and use it as `JWT_SECRET` in your `.env` file.
+- Open [http://localhost:5000](http://localhost:5000) in your browser.
 
 ## API Endpoints
 

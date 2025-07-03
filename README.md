@@ -73,169 +73,101 @@ blog-app/
 └── package.json
 ```
 
-## Installation
+## Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB (local or cloud instance)
-- npm or yarn
+- **Node.js** (v14 or higher)
+- **MongoDB** (local or cloud instance)
+- **npm** (comes with Node.js)
 
-### Setup
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd blog-app
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd blog-app
-   ```
+### 2. Install Dependencies
+```bash
+# Install root dependencies (for concurrently)
+npm install
 
-2. **Install dependencies**
-   ```bash
-   # Install root dependencies
-   npm install
-   
-   # Install backend dependencies
-   cd backend
-   npm install
-   
-   # Install frontend dependencies
-   cd ../frontend
-   npm install
-   ```
+# Install backend dependencies
+cd backend
+npm install
 
-3. **Environment Setup**
-   
-   Create a `.env` file in the backend directory:
-   ```env
-   MONGO_URI=mongodb://localhost:27017/blog-app
-   JWT_SECRET=your_jwt_secret_key_here
-   PORT=5000
-   ```
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
 
-4. **Database Setup**
-   
-   Make sure MongoDB is running. If using a local instance:
-   ```bash
-   mongod
-   ```
+### 3. Environment Setup
+Create a `.env` file in the `backend` directory:
+```env
+MONGO_URI=mongodb://localhost:27017/blog-app
+JWT_SECRET=your_jwt_secret_key_here
+PORT=5000
+```
+- Replace `your_jwt_secret_key_here` with a secure random string (see below).
 
-5. **Build Frontend**
-   ```bash
-   cd frontend
-   npm run build
-   ```
+### 4. Database Setup
+Make sure MongoDB is running. If using a local instance:
+```bash
+mongod
+```
+
+### 5. Build Frontend (for production)
+```bash
+cd frontend
+npm run build
+```
 
 ## Running the Application
 
 ### Development Mode
+Run both backend and frontend concurrently from the root directory:
 ```bash
-# Run both backend and frontend concurrently
 npm run dev
-
-# Or run separately:
-# Backend (from backend directory)
-npm run dev
-
-# Frontend (from frontend directory)
-npm start
 ```
+- Or run separately:
+  - **Backend** (from `backend` directory):
+    ```bash
+    npm run dev
+    ```
+  - **Frontend** (from `frontend` directory):
+    ```bash
+    npm start
+    ```
 
 ### Production Mode
-```bash
-# Build frontend
-cd frontend
-npm run build
+1. Build the frontend:
+   ```bash
+   cd frontend
+   npm run build
+   ```
+2. Start the backend (serves both API and React build):
+   ```bash
+   cd ../backend
+   npm start
+   ```
 
-# Start backend (serves both API and React build)
-cd ../backend
-npm start
+## JWT Secret Key Generation
+Generate a secure JWT secret key using Node.js:
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
+Copy the output and use it as `JWT_SECRET` in your `.env` file.
 
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/signup` - User registration
-  - **Request (multipart/form-data):**
-    - `email`: string
-    - `password`: string
-    - `profileImage`: file (JPG/PNG, max 5MB)
-  - **Success Response:**
-    - `201 Created`
-    - `{ message: 'User registered successfully.' }`
-  - **Error Responses:**
-    - `400`: Missing fields, invalid password, or invalid image type/size
-    - `409`: Email already registered
-
-- `POST /api/auth/login` - User login
-  - **Request (JSON):**
-    - `email`: string
-    - `password`: string
-  - **Success Response:**
-    - `200 OK`
-    - `{ token, user: { email, profileImage } }`
-  - **Error Responses:**
-    - `400`: Missing fields
-    - `401`: Invalid credentials
+- `POST /api/auth/signup` - Register a new user
+- `POST /api/auth/login` - Login and receive JWT
 
 ### Blogs
-- `GET /api/blogs` - Get all blogs
-  - **Headers:**
-    - `Authorization: Bearer <token>`
-  - **Success Response:**
-    - `200 OK`
-    - `[{ _id, title, description, image, user: { email, profileImage }, createdAt, ... }]`
-  - **Error Responses:**
-    - `401`: Unauthorized (missing/invalid token)
-
-- `POST /api/blogs` - Create new blog
-  - **Headers:**
-    - `Authorization: Bearer <token>`
-  - **Request (multipart/form-data):**
-    - `title`: string
-    - `description`: string
-    - `image`: file (JPG/PNG, max 5MB)
-  - **Success Response:**
-    - `201 Created`
-    - `{ message: 'Blog created successfully.', blog }`
-  - **Error Responses:**
-    - `400`: Missing fields, invalid image type/size
-    - `401`: Unauthorized
-
-- `GET /api/blogs/:id` - Get blog by ID
-  - **Headers:**
-    - `Authorization: Bearer <token>`
-  - **Success Response:**
-    - `200 OK`
-    - `{ _id, title, description, image, user: { email, profileImage }, createdAt, ... }`
-  - **Error Responses:**
-    - `404`: Blog not found
-    - `401`: Unauthorized
-
-- `PUT /api/blogs/:id` - Update blog
-  - **Headers:**
-    - `Authorization: Bearer <token>`
-  - **Request (multipart/form-data):**
-    - `title`: string (optional)
-    - `description`: string (optional)
-    - `image`: file (JPG/PNG, max 5MB, optional)
-  - **Success Response:**
-    - `200 OK`
-    - `{ message: 'Blog updated successfully.', blog }`
-  - **Error Responses:**
-    - `400`: Invalid image type/size
-    - `401`: Unauthorized
-    - `403`: Not the blog owner
-    - `404`: Blog not found
-
-- `DELETE /api/blogs/:id` - Delete blog
-  - **Headers:**
-    - `Authorization: Bearer <token>`
-  - **Success Response:**
-    - `200 OK`
-    - `{ message: 'Blog deleted successfully.' }`
-  - **Error Responses:**
-    - `401`: Unauthorized
-    - `403`: Not the blog owner
-    - `404`: Blog not found
+- `GET /api/blogs` - List all blogs
+- `POST /api/blogs` - Create a new blog (requires JWT)
+- `PUT /api/blogs/:id` - Update a blog (requires JWT)
+- `DELETE /api/blogs/:id` - Delete a blog (requires JWT)
 
 ## Usage
 
@@ -247,27 +179,28 @@ npm start
 6. **View**: Browse all blogs from all users
 
 ## Security Features
-
 - Password hashing with bcrypt
 - JWT token authentication
 - Input validation and sanitization
 - File type validation for uploads (JPG/PNG only)
-- **File size validation for uploads (max 5MB)**
+- File size validation for uploads (max 5MB)
 - CORS configuration
 - Protected routes
 
 ## File Upload
-
-The application supports image uploads for:
 - **Profile Images**: JPG/PNG format, max 5MB
 - **Blog Images**: JPG/PNG format, max 5MB
+- Files are stored in the `backend/uploads/` directory with unique filenames.
 
-Files are stored in the `uploads/` directory with unique filenames.
+## Troubleshooting
 
-**Note:** If the file type is not JPG/PNG or the file size exceeds 5MB, the server will return a 400 error with a relevant message.
+- **MongoDB not running**: Ensure MongoDB is installed and running (`mongod`).
+- **Port conflicts**: Change the `PORT` in your `.env` if 5000 is in use.
+- **Frontend build errors**: Make sure `frontend/public/index.html` exists and all dependencies are installed.
+- **API errors**: Check backend logs for error messages.
+- **JWT errors**: Ensure your `JWT_SECRET` is set and valid.
 
 ## Contributing
-
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
@@ -276,8 +209,4 @@ Files are stored in the `uploads/` directory with unique filenames.
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Support
-
-For support and questions, please open an issue in the GitHub repository. 
+MIT 

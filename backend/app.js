@@ -9,7 +9,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://your-frontend-url.vercel.app' // Replace with your actual Vercel URL after deployment
+  'https://blog-app-fawn-eight-79.vercel.app'
 ];
 app.use(cors({
   origin: function (origin, callback) {

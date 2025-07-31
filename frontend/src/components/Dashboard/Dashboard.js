@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import BlogForm from '../Blog/BlogForm';
 import BlogView from '../Blog/BlogView';
 import { getStoredToken, getStoredUser, clearTokens, isTokenExpired } from '../../utils/tokenUtils';
+import './Dashboard.css';
 
 export default function Dashboard() {
   const [blogs, setBlogs] = useState([]);
@@ -90,57 +91,63 @@ export default function Dashboard() {
   if (!user) return <div>Please log in.</div>;
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Dashboard</h2>
-        <div>
-          <img src={`http://localhost:5000${user.profileImage}`} alt="Profile" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', marginRight: 8 }} />
+    <div className="dashboard-bg">
+      <div className="dashboard-topbar">
+        <div className="dashboard-appname">Blog App</div>
+        <div className="dashboard-userinfo">
+          {user.profileImage && (
+            <img
+              src={`http://localhost:5000${user.profileImage}`}
+              alt="Profile"
+              style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', marginRight: 12 }}
+            />
+          )}
           <span>{user.email}</span>
-          <button onClick={handleLogout} style={{ marginLeft: 12 }}>Logout</button>
+          <button className="dashboard-logout" onClick={handleLogout}>Logout</button>
         </div>
       </div>
-      <button style={{ margin: '16px 0' }} onClick={() => { setEditingBlog(null); setShowForm(true); }}>Add New Blog</button>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {showForm && (
-        <BlogForm
-          blog={editingBlog}
-          onSave={() => { setShowForm(false); fetchBlogs(); }}
-          onCancel={() => setShowForm(false)}
-        />
-      )}
-      {viewingBlog && (
-        <BlogView blog={viewingBlog} onBack={() => setViewingBlog(null)} />
-      )}
-      {!showForm && !viewingBlog && (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Image</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blogs.map(blog => (
-              <tr key={blog._id}>
-                <td>{blog.title}</td>
-                <td><img src={`http://localhost:5000${blog.image}`} alt="Blog" style={{ width: 60, height: 40, objectFit: 'cover' }} /></td>
-                <td>{blog.description.length > 50 ? blog.description.slice(0, 50) + '...' : blog.description}</td>
-                <td>
-                  <button onClick={() => setViewingBlog(blog)}>View</button>
-                  {blog.user && blog.user.email === user.email && (
-                    <>
-                      <button onClick={() => { setEditingBlog(blog); setShowForm(true); }}>Edit</button>
-                      <button onClick={() => handleDelete(blog._id)}>Delete</button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <div className="dashboard-content">
+        <div className="dashboard-main">
+          <div className="dashboard-table-header-row">
+            <span className="dashboard-table-title">Title</span>
+            <span className="dashboard-table-actions">Actions</span>
+            <button className="dashboard-addbtn" onClick={() => { setEditingBlog(null); setShowForm(true); }}>Add New Blog</button>
+          </div>
+          {error && <div className="dashboard-error">{error}</div>}
+          {showForm && (
+            <div className="dashboard-modal-bg">
+              <div className="dashboard-modal">
+                <BlogForm
+                  blog={editingBlog}
+                  onSave={() => { setShowForm(false); fetchBlogs(); }}
+                  onCancel={() => setShowForm(false)}
+                />
+              </div>
+            </div>
+          )}
+          {viewingBlog && (
+            <BlogView blog={viewingBlog} onBack={() => setViewingBlog(null)} />
+          )}
+          {!showForm && !viewingBlog && (
+            <div className="dashboard-blog-list">
+              {blogs.map(blog => (
+                <div className="dashboard-blog-row" key={blog._id}>
+                  <span className="dashboard-blog-title">{blog.title}</span>
+                  <span className="dashboard-blog-actions">
+                    <button className="dashboard-viewbtn" onClick={() => setViewingBlog(blog)}>View</button>
+                    {blog.user && blog.user.email === user.email && (
+                      <>
+                        <button className="dashboard-editbtn" onClick={() => { setEditingBlog(blog); setShowForm(true); }}>Edit</button>
+                        <button className="dashboard-delbtn" onClick={() => handleDelete(blog._id)}>Delete</button>
+                      </>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 } 

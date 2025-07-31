@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { signup } from '../../api/api';
+import './Signup.css';
 
 export default function Signup({ onSignup }) {
   const [email, setEmail] = useState('');
@@ -27,13 +28,13 @@ export default function Signup({ onSignup }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} encType="multipart/form-data">
-      <h2>Sign Up</h2>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required minLength={8} />
-      <input type="file" accept="image/png, image/jpeg" onChange={e => setProfileImage(e.target.files[0])} required />
-      <button type="submit">Sign Up</button>
-      {error && <div style={{color: 'red'}}>{error}</div>}
+    <form className="signup-form" style={{ margin: 0 }} onSubmit={handleSubmit} encType="multipart/form-data">
+      <h2 className="signup-title">Sign Up</h2>
+      <input className="signup-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+      <input className="signup-input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required minLength={8} />
+      <input className="signup-input" type="file" accept="image/png, image/jpeg" onChange={e => setProfileImage(e.target.files[0])} required />
+      <button className="signup-btn" type="submit">Sign Up</button>
+      {error && <div className="signup-error">{error}</div>}
     </form>
   );
-} 
+}

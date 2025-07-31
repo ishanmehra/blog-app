@@ -1,0 +1,78 @@
+.blogview-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(60, 40, 80, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+.blogview-modal {
+  background: rgba(30, 20, 50, 0.97);
+  border-radius: 32px;
+  box-shadow: 0 4px 32px rgba(80, 60, 120, 0.18);
+  padding: 48px 40px;
+  max-width: 700px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+}
+.blogview-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 24px 0 16px 0;
+  text-align: center;
+}
+.blogview-img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 40vh;
+  object-fit: contain;
+  border-radius: 18px;
+  box-shadow: 0 1px 8px rgba(80, 60, 120, 0.12);
+  margin-bottom: 12px;
+}
+.blogview-desc-box {
+  background: rgba(60, 40, 80, 0.18);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  width: 100%;
+  max-width: 500px;
+}
+.blogview-desc {
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0;
+  text-align: left;
+  word-break: break-word;
+}
+.blogview-author {
+  font-size: 1rem;
+  color: #ffaf7b;
+  margin-bottom: 18px;
+  margin-top: 0;
+}
+.blogview-backbtn {
+  background: #a084e8;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 8px;
+  cursor: pointer;
+  align-self: center;
+  transition: background 0.2s;
+}
+.blogview-backbtn:hover {
+  background: #ffaf7b;
+  color: #3a1c71;
+} 

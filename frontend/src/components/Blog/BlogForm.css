@@ -1,0 +1,105 @@
+.blogform-form {
+  background: #fbeffb;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(80, 60, 120, 0.08);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+}
+.blogform-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3a1c71;
+  margin-bottom: 28px;
+  text-align: left;
+}
+.blogform-label {
+  font-size: 1.1rem;
+  color: #3a1c71;
+  margin-bottom: 6px;
+  margin-top: 12px;
+}
+.blogform-input, .blogform-textarea {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1c4e9;
+  font-size: 1rem;
+  outline: none;
+  background: #f7f5fa;
+  transition: border 0.2s;
+}
+.blogform-input:focus, .blogform-textarea:focus {
+  border: 1.5px solid #a084e8;
+}
+.blogform-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+.blogform-file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.blogform-file-label {
+  background: #ede7f6;
+  color: #3a1c71;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+.blogform-file-label:hover {
+  background: #b39ddb;
+}
+.blogform-file {
+  display: none;
+}
+.blogform-file-chosen {
+  color: #3a1c71;
+  font-size: 1rem;
+}
+.blogform-btn-row {
+  display: flex;
+  gap: 18px;
+  margin-top: 18px;
+}
+.blogform-savebtn {
+  background: #a084e8;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.blogform-savebtn:hover {
+  background: #7c5fe6;
+}
+.blogform-cancelbtn {
+  background: #fff;
+  color: #a084e8;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 1.5px solid #a084e8;
+  border-radius: 8px;
+  padding: 12px 32px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.blogform-cancelbtn:hover {
+  background: #ede7f6;
+}
+.blogform-error {
+  color: #e53935;
+  margin-top: 18px;
+  text-align: center;
+  font-size: 1rem;
+} 

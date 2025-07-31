@@ -9,7 +9,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://blog-app-fawn-eight-79.vercel.app'
+  'https://blog-app-tau-sooty.vercel.app'
 ];
 app.use(cors({
   origin: function (origin, callback) {

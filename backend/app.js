@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-
 const authRoutes = require('./routes/auth.routes');
 const blogRoutes = require('./routes/blog.routes');
 

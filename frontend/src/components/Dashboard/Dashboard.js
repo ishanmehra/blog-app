@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [viewingBlog, setViewingBlog] = useState(null);
   const user = getStoredUser();
   const token = getStoredToken();
+  const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
   const fetchBlogs = () => {
     if (!token || isTokenExpired(token)) {
@@ -21,7 +22,7 @@ export default function Dashboard() {
       return;
     }
     
-    fetch('/api/blogs', {
+    fetch(`${API_BASE}/blogs`, {
       headers: { 'Authorization': 'Bearer ' + token }
     })
       .then(res => {
@@ -65,7 +66,7 @@ export default function Dashboard() {
     }
     
     try {
-      const res = await fetch(`/api/blogs/${id}`, {
+      const res = await fetch(`${API_BASE}/blogs/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': 'Bearer ' + token }
       });

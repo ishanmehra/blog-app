@@ -40,16 +40,17 @@ export default function BlogForm({ blog, onSave, onCancel }) {
     formData.append('description', description);
     if (image) formData.append('image', image);
     
+    const API_BASE = process.env.REACT_APP_API_URL || '/api';
     try {
       let res, data;
       if (blog && blog._id) {
-        res = await fetch(`/api/blogs/${blog._id}`, {
+        res = await fetch(`${API_BASE}/blogs/${blog._id}`, {
           method: 'PUT',
           headers: { 'Authorization': 'Bearer ' + token },
           body: formData
         });
       } else {
-        res = await fetch('/api/blogs', {
+        res = await fetch(`${API_BASE}/blogs`, {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + token },
           body: formData

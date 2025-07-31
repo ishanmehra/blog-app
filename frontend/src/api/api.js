@@ -14,7 +14,13 @@ export const login = async (email, password) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
-  return res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    data = { message: 'Invalid server response', error: e.message };
+  }
+  return data;
 };
 
 // Add more API functions for blogs, etc. 

@@ -6,7 +6,7 @@ export default function BlogView({ blog, onBack }) {
   return (
     <div className="blogview-modal-bg">
       <div className="blogview-modal">
-        <img className="blogview-img" src={`http://localhost:5000${blog.image}`} alt="Blog" />
+        <img className="blogview-img" src={blog.image} alt="Blog" />
         <h2 className="blogview-title">{blog.title}</h2>
         <div className="blogview-desc-box">
           <p className="blogview-desc">{blog.description}</p>

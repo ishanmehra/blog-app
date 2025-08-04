@@ -98,7 +98,7 @@ export default function Dashboard() {
         <div className="dashboard-userinfo">
           {user.profileImage && (
             <img
-              src={`http://localhost:5000${user.profileImage}`}
+              src={user.profileImage}
               alt="Profile"
               style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', marginRight: 12 }}
             />

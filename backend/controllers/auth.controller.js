@@ -1,7 +1,7 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
+const { uploadToCloudinary } = require('../middlewares/upload.middleware');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'Qw3rT!9zXy7$Lp0vBn6@eFgH#jKl2^sDf';
 
@@ -16,23 +16,23 @@ exports.signUp = async (req, res) => {
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       return res.status(400).json({ message: 'Password must be at least 8 characters and contain letters and numbers.' });
     }
-    // Validate image type
-    const ext = path.extname(req.file.originalname).toLowerCase();
-    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
-      return res.status(400).json({ message: 'Profile image must be JPG or PNG.' });
-    }
+    
     // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: 'Email already registered.' });
     }
+    
+    // Upload profile image to Cloudinary
+    const result = await uploadToCloudinary(req.file, 'blog-app/profiles');
+    
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     // Save user
     const user = new User({
       email,
       password: hashedPassword,
-      profileImage: `/uploads/profiles/${req.file.filename}`
+      profileImage: result.secure_url
     });
     await user.save();
     res.status(201).json({ message: 'User registered successfully.' });

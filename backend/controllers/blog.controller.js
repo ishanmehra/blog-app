@@ -1,5 +1,5 @@
 const Blog = require('../models/blog.model');
-const path = require('path');
+const { uploadToCloudinary } = require('../middlewares/upload.middleware');
 
 // Create Blog
 exports.createBlog = async (req, res) => {
@@ -8,15 +8,14 @@ exports.createBlog = async (req, res) => {
     if (!title || !description || !req.file) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
-    // Validate image type
-    const ext = path.extname(req.file.originalname).toLowerCase();
-    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
-      return res.status(400).json({ message: 'Blog image must be JPG or PNG.' });
-    }
+    
+    // Upload image to Cloudinary
+    const result = await uploadToCloudinary(req.file, 'blog-app/blogs');
+    
     const blog = new Blog({
       title,
       description,
-      image: `/uploads/blogs/${req.file.filename}`,
+      image: result.secure_url,
       user: req.user.userId
     });
     await blog.save();
@@ -59,11 +58,9 @@ exports.updateBlog = async (req, res) => {
     if (title) blog.title = title;
     if (description) blog.description = description;
     if (req.file) {
-      const ext = path.extname(req.file.originalname).toLowerCase();
-      if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
-        return res.status(400).json({ message: 'Blog image must be JPG or PNG.' });
-      }
-      blog.image = `/uploads/blogs/${req.file.filename}`;
+      // Upload new image to Cloudinary
+      const result = await uploadToCloudinary(req.file, 'blog-app/blogs');
+      blog.image = result.secure_url;
     }
     await blog.save();
     res.json({ message: 'Blog updated successfully.', blog });

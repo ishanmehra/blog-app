@@ -26,10 +26,6 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files for images
-app.use('/uploads/profiles', express.static(path.join(__dirname, 'uploads/profiles')));
-app.use('/uploads/blogs', express.static(path.join(__dirname, 'uploads/blogs')));
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);

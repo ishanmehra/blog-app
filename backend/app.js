@@ -13,9 +13,10 @@ const globalLimiter = rateLimit({
   message: { message: 'Too many requests from this IP, please try again later.' }
 });
 
-app.use(globalLimiter);
+
 
 const app = express();
+app.use(globalLimiter);
 
 const allowedOrigins = [
   'http://localhost:3000',

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -13,9 +12,8 @@ const globalLimiter = rateLimit({
   message: { message: 'Too many requests from this IP, please try again later.' }
 });
 
-
-
 const app = express();
+app.set('trust proxy', 1); // Trust proxy headers so rate limiting works correctly behind Vercel/Netlify/etc.
 app.use(globalLimiter);
 
 const allowedOrigins = [

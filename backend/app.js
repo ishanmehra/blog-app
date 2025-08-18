@@ -1,9 +1,19 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth.routes');
 const blogRoutes = require('./routes/blog.routes');
+// Global rate limiter (protects all endpoints, including static and unknown routes)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // limit each IP to 200 requests per windowMs
+  message: { message: 'Too many requests from this IP, please try again later.' }
+});
+
+app.use(globalLimiter);
 
 const app = express();
 

@@ -2,6 +2,19 @@ const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { uploadToCloudinary } = require('../middlewares/upload.middleware');
+const rateLimit = require('express-rate-limit');
+// Rate limiters for sign up and login
+exports.signUpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 sign-up requests per windowMs
+  message: { message: 'Too many sign-up attempts. Please try again later.' }
+});
+
+exports.loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 login requests per windowMs
+  message: { message: 'Too many login attempts. Please try again later.' }
+});
 
 const JWT_SECRET = process.env.JWT_SECRET || 'Qw3rT!9zXy7$Lp0vBn6@eFgH#jKl2^sDf';
 
@@ -11,6 +24,9 @@ exports.signUp = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password || !req.file) {
       return res.status(400).json({ message: 'All fields are required.' });
+    }
+    if (typeof email !== 'string') {
+      return res.status(400).json({ message: 'Invalid email format.' });
     }
     // Validate password
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
@@ -47,6 +63,9 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required.' });
+    }
+    if (typeof email !== "string") {
+      return res.status(400).json({ message: 'Invalid email format.' });
     }
     const user = await User.findOne({ email });
     if (!user) {

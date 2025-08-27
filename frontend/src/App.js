@@ -20,7 +20,7 @@ function SignupPage() {
         </span>
       </p>
       <div style={{ borderRadius: 28, boxShadow: '0 4px 32px rgba(80, 60, 120, 0.12)', padding: '44px 36px', display: 'flex', flexDirection: 'column', minWidth: 350, maxWidth: 400, width: '100%', marginTop: 16 }}>
-        <Signup onSignup={() => navigate('/blog')} />
+        <Signup onSignup={() => navigate('/login')} />
       </div>
     </div>
   );
